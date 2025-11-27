@@ -5,9 +5,13 @@ Chatbot usando Ollama y Streamlit
 Necesitas instalar en tu máquina las siguientes herramientas:
 - [Ollama](https://ollama.com/) 
 
-Descargar Ollama (https://ollama.com/) e instalar Llama3.2 con el comando: ollama pull llama3.2 
+Descargar Ollama (https://ollama.com/) e instalar Llama3.2 con el comando
 
-- [uv](https://github.com/astral-sh/uv).
+```bash
+ollama pull llama3.2 
+   ```
+
+- [uv](https://github.com/astral-sh/uv)
 
 En terminal python ejecutar:
 
@@ -30,8 +34,10 @@ En terminal python ejecutar:
    uv venv
 
    # Activar el venv
+   
    # En Windows:
    .venv\Scripts\activate
+   
    # En macOS/Linux:
    source .venv/bin/activate
 
