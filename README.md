@@ -16,14 +16,14 @@ ollama pull llama3.2
 En terminal python ejecutar:
 
 ```bash
-   pip install uv
+pip install uv
    ```
 - [Langchain](https://github.com/langchain-ai/langchain) 
 
 En terminal python ejecutar:
 
 ```bash
-   uv pip install langchain langchain-ollama ollama
+uv pip install langchain langchain-ollama ollama
    ```
 
 ## Setup Guide
