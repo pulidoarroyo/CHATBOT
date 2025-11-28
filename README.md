@@ -1,8 +1,8 @@
-# Ollama CHATBOT
-Chatbot usando Ollama y Streamlit
+# Llama3.2 (Ollama) CHATBOT TEST
+Test usando Ollama, Langchain y Streamlit
 
 ## Antes de empezar 
-Necesitas instalar en tu máquina las siguientes herramientas:
+Necesitas instalar en tu PC las siguientes herramientas:
 - [Ollama](https://ollama.com/) 
 
 Descargar Ollama (https://ollama.com/) e instalar Llama3.2 con el comando
@@ -26,7 +26,7 @@ En terminal python ejecutar:
 uv pip install langchain langchain-ollama ollama
    ```
 
-## Setup Guide
+## Guía de instalación
 
 1. Inicializar el venv (entorno virtual):
    ```bash
