@@ -42,7 +42,7 @@ uv pip install langchain langchain-ollama ollama
    source .venv/bin/activate
 
    # Instalar dependencias
-   uv pip install -r requirements.txt
+   uv pip install -r test_requirements.txt
    ```
 
 3. Ejecutar la aplicación Streamlit:
