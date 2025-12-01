@@ -14,3 +14,6 @@ class ChatRequest(BaseModel):
 def chat(req: ChatRequest):
     answer = ask_gemini(req.message)
     return {"response": answer}
+
+#uvicorn app.main:app --reload
+#http://localhost:8000/docs

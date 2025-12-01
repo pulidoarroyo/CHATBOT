@@ -1,5 +1,5 @@
 import google.generativeai as genai
 import pprint
-genai.configure(api_key="AIzaSyBOGUyb82tAQI9h65rEE36euyvRZoYSVb8")
+genai.configure(api_key="") # Add API KEY here
 for model in genai.list_models():
     pprint.pprint(model)
