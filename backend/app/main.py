@@ -1,49 +1,47 @@
 import os
+import inspect
+import logging
 from fastapi import FastAPI
-from contextlib import asynccontextmanager
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from backend.app.config.dbconf import init_db
+from contextlib import asynccontextmanager
 
-load_dotenv()
-PORT = int(os.getenv("PORT", 8080))
+
+env_path = find_dotenv(usecwd=True)
+env_loaded = False
+if env_path:
+    load_dotenv(env_path)
+    env_loaded = True
+
+logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    db_client = None
+    
+    db = await init_db(env_loaded=env_loaded)
+    app.state.db = db
     try:
-        db_client = await init_db()
-        app.state.db_client = db_client
-        app.state.db_initialized = True
-        print("Base de datos inicializada ")
-    except Exception as e:
-        app.state.db_initialized = False
-        print("Error inicializando la base de datos:", e)
-    yield
-
-    client = getattr(app.state, "db_client", None)
-    if client is not None:
+        yield
+    finally:
+        
         try:
-            import inspect
+            if hasattr(db, "aclose"):
+                await db.aclose()
+            elif hasattr(db, "close"):
+                res = db.close()
+                if inspect.isawaitable(res):
+                    await res
+        except Exception:
+            logger.exception("Error closing DB client")
 
-            maybe = None
-            if hasattr(client, "aclose"):
-                maybe = client.aclose()
-            elif hasattr(client, "close"):
-                maybe = client.close()
-
-            if maybe is not None and inspect.isawaitable(maybe):
-                await maybe
-        except Exception as e:
-            print("Error cerrando conexión a DB en shutdown:", e)
-
-    print("Servidor cerrado correctamente.")
 
 app = FastAPI(lifespan=lifespan)
 
+#poner todas las routes que usaras aqui
+
+
+
 @app.get("/")
 async def root():
-    return {"message": f"Servidor corriendo en http://localhost:{PORT}"}
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("backend.app.main:app", host="localhost", port=8080, reload=True)
+    return {"message": "API is running"}
