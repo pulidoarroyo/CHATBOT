@@ -1,6 +1,6 @@
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS Usuario (
-    id_usuario INTEGER PRIMARY KEY,
+    id_usuario TEXT PRIMARY KEY,
     nombre TEXT NOT NULL,
     apellido TEXT NOT NULL,
     email TEXT NOT NULL,
