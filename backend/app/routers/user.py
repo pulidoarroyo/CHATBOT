@@ -1,18 +1,24 @@
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from pydantic import BaseModel
 from typing import Optional, List
 
 
-from app.services import user_service 
+from ..services import user_service 
 
 router = APIRouter()
 
 # --- ESQUEMAS (Pydantic) ---
 class UserSchema(BaseModel):
-    username: str
+    id_usuario: Optional[str] = None
+    nombre: str
+    apellido:str
     email: str
     password: str 
+
+class loginSchema(BaseModel):
+    email:str
+    password:str
 
 class UserUpdateSchema(BaseModel):
     username: Optional[str] = None
@@ -20,10 +26,13 @@ class UserUpdateSchema(BaseModel):
 
 # --- ENDPOINTS ---
 
-@router.post("/")
-def create_user(user: UserSchema):
-    # Llamada limpia: "Del servicio de usuario, crea el usuario"
-    return user_service.create_user(user.dict())
+@router.post("/register")
+async def create_user(user: UserSchema,request:Request):
+    return await user_service.create_user(user,request)
+
+@router.post("/login")
+async def loginUser(user:loginSchema,request:Request):
+    return await user_service.login_user(user,request)
 
 @router.get("/")
 def list_users():
