@@ -3,17 +3,23 @@
 
 from fastapi import APIRouter
 from pydantic import BaseModel
-from app.services.gemini_client import ask_gemini
+from ..services.gemini_client import ask_gemini
 
 router = APIRouter(prefix="/chat", tags=["Chatbot"])
 
 class ChatRequest(BaseModel):
     message: str
 
-@router.post("/")
+@router.post("/promt")
 def chat(req: ChatRequest):
     answer = ask_gemini(req.message)
-    return {"response": answer}
+    if not answer:
+        return{ 
+            "response": "[Chatbot Error] can't comunicate with Gemini"
+            }
+    return {
+        "response":answer
+        }
 
 #uvicorn app.main:app --reload
 #http://localhost:8000/docs

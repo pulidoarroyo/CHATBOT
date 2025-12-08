@@ -5,7 +5,8 @@ from fastapi import FastAPI
 from dotenv import load_dotenv, find_dotenv
 from backend.app.config.dbconf import init_db
 from contextlib import asynccontextmanager
-
+from .routers import user
+from .routers import chatbot
 
 env_path = find_dotenv(usecwd=True)
 env_loaded = False
@@ -39,8 +40,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 #poner todas las routes que usaras aqui
-
-
+app.include_router(user.router)
+app.include_router(chatbot.router)
 
 @app.get("/")
 async def root():
