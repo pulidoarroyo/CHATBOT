@@ -35,8 +35,26 @@ async def loginUser(user:loginSchema,request:Request):
     return await user_service.login_user(user,request)
 
 @router.get("/")
-def list_users():
-    return user_service.get_all_users()
+async def get_all_users(request: Request): 
+    return await user_service.get_all_users(request)
+
+@router.get("/{user_id}")
+async def get_user_by_id(user_id: str, request: Request):
+    # El {user_id} de la URL llega aquí como variable
+    return await user_service.get_user_by_id(user_id, request)
+
+@router.put("/{user_id}")
+async def update_user(user_id: str, user_data: UserSchema, request: Request):
+    """
+    user_id: Viene de la URL (quién quieres editar)
+    user_data: Viene del Body (los datos nuevos en JSON)
+    request: La conexión a la DB
+    """
+    return await user_service.update_user(user_id, user_data, request)
+
+@router.delete("/{user_id}")
+async def delete_user(user_id: str, request: Request):
+    return await user_service.delete_user(user_id, request)
 
 @router.get("/{user_id}")
 def get_user(user_id: int):

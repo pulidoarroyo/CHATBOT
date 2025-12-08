@@ -40,8 +40,11 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 #poner todas las routes que usaras aqui
-app.include_router(user.router)
-app.include_router(chatbot.router)
+#app.include_router(user.router)
+#app.include_router(chatbot.router)
+
+app.include_router(user.router, prefix="/users", tags=["Users"])
+app.include_router(chatbot.router, prefix="/chatbot", tags=["Chatbot"])
 
 @app.get("/")
 async def root():
