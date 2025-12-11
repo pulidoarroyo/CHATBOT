@@ -1,7 +1,7 @@
-"use client"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { VscLayoutSidebarLeft } from "react-icons/vsc"
+import { MdDarkMode } from "react-icons/md"
+import { BsSunFill } from "react-icons/bs"
 import MessageBubble from "./MessageBubble"
 import InputArea from "./InputArea"
 
@@ -71,6 +71,22 @@ export default function AnalogClock({
     },
   ])
 
+  // Initialize with false (dark mode is default), true means light mode is active
+  const [isLightMode, setIsLightMode] = useState(false)
+
+  // Initialize theme on component mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'dark'
+    const isLight = savedTheme === 'light'
+    setIsLightMode(isLight)
+    
+    if (isLight) {
+      document.documentElement.classList.add('light')
+    } else {
+      document.documentElement.classList.remove('light')
+    }
+  }, [])
+
   const handleSendMessage = (message: string) => {
     if (!message.trim()) return
 
@@ -83,11 +99,29 @@ export default function AnalogClock({
     setMessages([...messages, newMessage])
   }
 
+  // Toggle between dark and light modes - adds/removes 'light' class
+  const toggleTheme = () => {
+    const newIsLight = !isLightMode
+    setIsLightMode(newIsLight)
+    
+    if (newIsLight) {
+      document.documentElement.classList.add('light')
+      localStorage.setItem('theme', 'light')
+    } else {
+      document.documentElement.classList.remove('light')
+      localStorage.setItem('theme', 'dark')
+    }
+  }
+
   return (
     <main className="chat-window">
       <div className="chat-header">
         <button className="sidebar-toggle-btn" onClick={onToggleSidebar} title="Toggle sidebar">
           <VscLayoutSidebarLeft size={24} />
+        </button>
+        {/* Theme toggle button with corrected icon logic */}
+        <button className="theme-toggle-btn" onClick={toggleTheme} title="Toggle theme">
+          {isLightMode ? <MdDarkMode size={24} /> : <BsSunFill size={24} />}
         </button>
       </div>
       <div className="messages-container">

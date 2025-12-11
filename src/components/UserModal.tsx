@@ -1,7 +1,4 @@
-"use client"
-
 import type React from "react"
-import { FaBrush, FaGear } from "react-icons/fa6"
 import { MdHelp } from "react-icons/md"
 import { FiLogOut } from "react-icons/fi"
 
@@ -30,18 +27,6 @@ export default function UserModal({ onClose }: UserModalProps) {
           <div className="modal-options">
             <button className="modal-option">
               <span className="option-icon">
-                <FaBrush size={18} />
-              </span>
-              <span>Personalización</span>
-            </button>
-            <button className="modal-option">
-              <span className="option-icon">
-                <FaGear size={18} />
-              </span>
-              <span>Configuración</span>
-            </button>
-            <button className="modal-option">
-              <span className="option-icon">
                 <MdHelp size={18} />
               </span>
               <span>Ayuda</span>
@@ -55,13 +40,6 @@ export default function UserModal({ onClose }: UserModalProps) {
             </button>
           </div>
 
-          <div className="modal-divider"></div>
-
-          <div className="modal-footer">
-            <span className="footer-name">Sho</span>
-            <span className="footer-plan">Gratis</span>
-            <button className="footer-button">Mejorar plan</button>
-          </div>
         </div>
       </div>
     </>

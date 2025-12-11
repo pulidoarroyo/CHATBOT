@@ -1,4 +1,4 @@
-/* Color Paletta*/
+/* Color Paletta Modo Oscuro*/
 :root {
   --bg-primary: #1a454b; /* Fondo general */
   --bg-secondary: #183147; /* Sidebar */
@@ -14,6 +14,27 @@
   --accent-button: #aac0a4; /* Botón de enviar dentro del input */
   --border-color: #4d6f68; /* Separadores y bordes de botones */
   --border-input-btn: #b3b3b3; /* Trazo del botón dentro del input */
+}
+
+/* Color Paletta Modo Claro*/
+:root.light {
+  /* Fondos */
+  --bg-primary: #F4F7F5;      /* Fondo general (muy suave y limpio) */
+  --bg-secondary: #E6ECE8;    /* Sidebar / Paneles */
+  --bg-tertiary: #D3E0D8;     /* Botones / burbujas de mensaje enviadas */
+  --bg-input: rgba(200, 215, 205, 0.4); /* Input con 40% de opacidad */
+
+  /* Textos */
+  --text-primary: #2F3E36;    /* Texto principal (verde gris muy oscuro) */
+  --text-secondary: #4E6A5A;  /* Texto secundario / timestamp */
+
+  /* Colores de acento */
+  --accent-code: #CDE2D3;     /* Fondo de bloques de código */
+  --accent-button: #89A48F;   /* Botón de enviar (verde tenue suave) */
+
+  /* Bordes */
+  --border-color: #9CB3A4;    /* Bordes generales */
+  --border-input-btn: #AFAFAF; /* Borde de los botones del input */
 }
 
 * {
@@ -195,6 +216,7 @@ body {
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
+  justify-content: space-between; /* Updated chat-header to position theme button on the right */
 }
 
 .sidebar-toggle-btn {
@@ -209,6 +231,22 @@ body {
 }
 
 .sidebar-toggle-btn:hover {
+  background-color: var(--bg-tertiary);
+}
+
+/* Added theme-toggle-btn styling */
+.theme-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.theme-toggle-btn:hover {
   background-color: var(--bg-tertiary);
 }
 

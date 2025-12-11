@@ -1,9 +1,6 @@
-"use client"
-
 import type React from "react"
 import { useState } from "react"
 import { MdSend } from "react-icons/md"
-import { RiVoiceprintFill } from "react-icons/ri"
 import { MdOutlineAttachFile } from "react-icons/md"
 
 interface InputAreaProps {
@@ -37,11 +34,11 @@ export default function InputArea({ onSendMessage }: InputAreaProps) {
           className="message-input"
         />
         <div className="input-actions">
+          <button className="action-btn" title="Cambiar Modelo">
+            Cambiar Modelo
+          </button>
           <button className="action-btn" title="Attach file">
             <MdOutlineAttachFile size={20} />
-          </button>
-          <button className="action-btn" title="Voice">
-            <RiVoiceprintFill size={20} />
           </button>
           <button className="send-btn" onClick={handleSend} title="Send">
             <MdSend size={20} />
