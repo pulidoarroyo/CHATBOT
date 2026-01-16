@@ -1,28 +1,24 @@
 "use client"
 
-import { useState } from "react"
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import "./App.css"
-import Sidebar from "./components/Sidebar"
-import ChatWindow from "./components/ChatWindow"
+import LogIn from './LogIn';
+import Register from './Register';
+import Chatbot from './Chatbot'; 
+import Home from './Home';
 
 function App() {
-  const [chats, setChats] = useState([{ id: 1, name: "Script Figma Typescript" }])
-  const [activeChat, setActiveChat] = useState(1)
-  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   return (
-    <div className="app-container">
-      {sidebarOpen && (
-        <Sidebar
-          chats={chats}
-          activeChat={activeChat}
-          onSelectChat={setActiveChat}
-          onToggleSidebar={() => setSidebarOpen(false)}
-        />
-      )}
-      <ChatWindow sidebarOpen={sidebarOpen} onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-    </div>
-  )
+     <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<LogIn />} />
+        <Route path="/register" element={<Register />}/>
+        <Route path="/chatbot" element={<Chatbot />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App
