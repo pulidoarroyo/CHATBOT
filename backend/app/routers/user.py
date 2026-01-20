@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request , Response
 from pydantic import BaseModel
 from typing import Optional, List
 
@@ -10,7 +10,7 @@ router = APIRouter()
 
 # --- ESQUEMAS (Pydantic) ---
 class UserSchema(BaseModel):
-    id_usuario: Optional[str] = None
+    id_usuario: Optional[int] = None
     nombre: str
     apellido:str
     email: str
@@ -27,12 +27,12 @@ class UserUpdateSchema(BaseModel):
 # --- ENDPOINTS ---
 
 @router.post("/register")
-async def create_user(user: UserSchema,request:Request):
-    return await user_service.create_user(user,request)
+async def create_user(user: UserSchema,request:Request,response:Response):
+    return await user_service.create_user(user,request,response)
 
 @router.post("/login")
-async def loginUser(user:loginSchema,request:Request):
-    return await user_service.login_user(user,request)
+async def loginUser(user:loginSchema,request:Request, response:Response):
+    return await user_service.login_user(user,request,response)
 
 @router.get("/")
 async def get_all_users(request: Request): 

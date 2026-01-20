@@ -1,32 +1,31 @@
 from fastapi import HTTPException, status
-import uuid 
-import aiosqlite
 
-async def create_user(user,request):
+
+async def create_user(user,request,response):
 
     db = request.app.state.db
 
     if not db:
         raise HTTPException(status_code=500, detail="Base de datos no inicializada")
     
-    user.id_usuario = str(uuid.uuid4())
-
     query = """
-        INSERT INTO Usuario (id_usuario, nombre, apellido, email, contraseña)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO Usuario (nombre, apellido, email, contraseña)
+        VALUES (?, ?, ?, ?)
     """
-    params = (user.id_usuario,user.nombre , user.apellido, user.email,user.password)
+    params = (user.nombre ,user.apellido, user.email,user.password)
 
     try:
 
         await db.execute(query,params)
 
+        response.status_code = 201
         return {
             "message": "Usuario creado exitosamente", 
-            "user": {"id": user.id_usuario,
-                     "username": user.nombre,
+            "user": {
+                     "name": user.nombre,
+                     "apellido": user.apellido,
                        "email": user.email,
-                         "password": user.password}
+                         }
         }
     
     except Exception as e:
@@ -44,7 +43,7 @@ async def create_user(user,request):
             detail="Error interno del servidor"
         )
 
-async def login_user(user, request):
+async def login_user(user, request, response):
     db = request.app.state.db # Asegúrate de usar el nombre correcto que pusiste en main.py
 
     query = "SELECT id_usuario, nombre, apellido, contraseña FROM Usuario WHERE email = ?"
@@ -52,12 +51,14 @@ async def login_user(user, request):
     try:
         result = await db.execute(query, (user.email, ))
 
-        print(result)
+        #print(result)
 
         rows = result 
 
         if not rows:
+            response.status_code = 400
             return {"message": "usuario no encontrado", "info": None}
+            #return response("message" : "usuario no encontrado", status_code = 400)
             
         row = rows[0]
 
@@ -67,6 +68,7 @@ async def login_user(user, request):
             pass
 
         if user_dict.get("contraseña") != user.password:
+             response.status_code = 400
              return {"message": "credenciales inválidas", "info": None}
         
         del user_dict["contraseña"]

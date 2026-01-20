@@ -1,9 +1,9 @@
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS Usuario (
-    id_usuario INTEGER PRIMARY KEY,
+    id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
     apellido TEXT NOT NULL,
-    email TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
     contraseña TEXT DEFAULT ''
 );
 

@@ -3,7 +3,8 @@ import inspect
 import logging
 from fastapi import FastAPI
 from dotenv import load_dotenv, find_dotenv
-from backend.app.config.dbconf import init_db
+#from backend.app.config.dbconf import init_db  #si les da error descomentan esta linea y comentan la de abajo :)
+from app.config.dbconf import init_db
 from contextlib import asynccontextmanager
 from .routers import user
 from .routers import chatbot
