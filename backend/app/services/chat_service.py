@@ -1,0 +1,34 @@
+from fastapi import HTTPException, status
+
+async def chat_by_id(chat_id:int,request,response):
+
+    db = request.app.state.db
+
+    query = """ select fecha, contenido, contenido_ia from Mensaje where fk_chat = ? """
+    
+
+    try:
+        result = await db.execute(query, (chat_id, ))
+
+        rows = result
+        
+        if not rows:
+            response.status_code = 404
+            return {"message": "chat sin mensajes", "info": None}
+        
+        messages_list = []
+
+        for row in rows:
+            
+            messages_dict = dict(row)
+
+            messages_list.append(messages_dict)
+
+        response.status_code = 202
+        return {
+            "data":messages_list
+            }
+            
+    except Exception as e:
+        print("error al buscar mensajes")
+        raise HTTPException(status_code = 400)
