@@ -1,9 +1,13 @@
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS Usuario (
+<<<<<<< Updated upstream
     id_usuario TEXT PRIMARY KEY,
+=======
+    id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
+>>>>>>> Stashed changes
     nombre TEXT NOT NULL,
     apellido TEXT NOT NULL,
-    email TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
     contraseña TEXT DEFAULT ''
 );
 
