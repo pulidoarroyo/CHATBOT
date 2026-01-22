@@ -30,6 +30,7 @@ async def chat_by_id(chat_id: int ,request: Request, response: Response):
 #http://localhost:8000/docs
 
 
+
 @router.get("/all")
 async def get_all_chats(request: Request, response: Response):
     """
@@ -37,3 +38,13 @@ async def get_all_chats(request: Request, response: Response):
     URL: GET /chatbot/chat/
     """
     return await chat_service.get_all_chats(request, response)
+
+
+
+@router.get("/user/{user_id}")
+async def get_chats_by_user(user_id: int, request: Request, response: Response):
+    """
+    Obtiene todos los chats que pertenecen a un ID de usuario específico.
+    URL: GET /chatbot/chat/user/1
+    """
+    return await chat_service.get_chats_by_user(user_id, request, response)

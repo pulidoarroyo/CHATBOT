@@ -37,7 +37,6 @@ async def chat_by_id(chat_id:int,request,response):
     
 
 
-
 #Obterner todos los chats 
 
 async def get_all_chats(request, response):
@@ -67,3 +66,37 @@ async def get_all_chats(request, response):
         print(f"Error al obtener chats: {e}")
         # Mantenemos el estándar de lanzar HTTPException en caso de error de DB
         raise HTTPException(status_code=500, detail="Error al consultar la base de datos")
+    
+
+
+
+#obtener todos los chats de un usuario
+
+async def get_chats_by_user(user_id: int, request, response):
+    db = request.app.state.db
+
+    # Filtramos en la tabla Chat usando la llave foránea fk_usuario
+    query = """ SELECT id_chat, nombre, fk_usuario FROM Chat WHERE fk_usuario = ? """
+
+    try:
+        # Pasamos el user_id como una tupla (user_id,) para evitar inyecciones SQL
+        result = await db.execute(query, (user_id,))
+        rows = result
+
+        if not rows:
+            response.status_code = 404
+            return {"message": f"El usuario {user_id} no tiene chats creados", "data": []}
+
+        chats_list = []
+        for row in rows:
+            chats_list.append(dict(row))
+
+        response.status_code = 200
+        return {
+            "usuario_id": user_id,
+            "data": chats_list
+        }
+            
+    except Exception as e:
+        print(f"Error al buscar chats del usuario {user_id}: {e}")
+        raise HTTPException(status_code=500, detail="Error al consultar chats por usuario")
