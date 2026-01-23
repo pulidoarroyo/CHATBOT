@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status
+from datetime import date
 
 
 async def chat_by_id(chat_id:int,request,response):
@@ -34,8 +35,53 @@ async def chat_by_id(chat_id:int,request,response):
     except Exception as e:
         print("error al buscar mensajes")
         raise HTTPException(status_code = 400)
-    
 
+
+
+async def post_message(chat_id:int,request,response,contenido,contenido_ia):
+
+    db = request.app.state.db
+
+    query = """ insert into mensaje (contenido,contenido_ia,fecha,fk_chat) values (?, ?, ?, ?) """
+
+    fecha = str(date.today())
+
+    params = (contenido,contenido_ia,fecha,chat_id)
+
+    try:
+        await db.execute(query,params)
+
+        print("mensaje guardado")
+
+    except Exception as e:
+
+        print("error al guardar mensaje")
+
+        raise HTTPException(status_code = 500)
+    
+async def post_chat(user_id:int,request, response , nombre_chat):
+    
+    db = request.app.state.db
+
+    query = """ insert into chat (nombre,fk_usuario) values (?, ?) """
+
+    params = (nombre_chat,user_id)
+
+    try:
+        await db.execute(query,params)
+
+        print("chat guardado")
+        
+        response.status_code = 201
+        return {
+            "data":"chat creado"
+        }
+        
+    except Exception as e:
+
+        print("error al guardar chat")
+
+        raise HTTPException(status_code = 500)
 
 #Obterner todos los chats 
 

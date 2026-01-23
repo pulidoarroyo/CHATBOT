@@ -3,9 +3,9 @@
 
 from fastapi import APIRouter, Request , Response
 from pydantic import BaseModel
-from ..services.gemini_client import ask_gemini
+from ..services.gemini_client import ask_gemini,ask_gemini_feedback
 from ..services import chat_service
-
+import json
 router = APIRouter(prefix="/chat", tags=["Chatbot"])
 
 class ChatRequest(BaseModel):
@@ -21,9 +21,27 @@ def chat(req: ChatRequest):
     return {
         "response":answer
         }
+    
+@router.post("/postchat/{user_id}")
+async def post_chat(user_id:int,chat_nombre,request: Request, response: Response):
+   return await chat_service.post_chat(user_id,request,response,chat_nombre)
+
+@router.post("/FeedBackPromt/{chat_id}")
+async def chat_ia_feedback(req:ChatRequest,chat_id: int,request: Request, response:Response):
+    contexto = await chat_service.chat_by_id(chat_id,request,response)
+    json_string = json.dumps(contexto)
+    answer = ask_gemini_feedback(req.message,json_string)
+    await chat_service.post_message(chat_id,request,response,req.message,answer)
+    if not answer:
+        return{
+            "response": "[Chatbot Error] can't comunicate with Gemini"
+            }
+    return {
+        "response":answer
+        }
 
 @router.get("/messages/{chat_id}")
-async def chat_by_id(chat_id: int ,request: Request, response: Response):
+async def chat_messages_by_id(chat_id: int ,request: Request, response: Response):
     return await chat_service.chat_by_id(chat_id,request,response)
 
 #uvicorn app.main:app --reload

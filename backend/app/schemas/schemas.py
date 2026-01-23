@@ -8,14 +8,14 @@ CREATE TABLE IF NOT EXISTS Usuario (
 );
 
 CREATE TABLE IF NOT EXISTS Chat (
-    id_chat INTEGER PRIMARY KEY,
+    id_chat INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
     fk_usuario INTEGER,
     FOREIGN KEY (fk_usuario) REFERENCES Usuario(id_usuario)
 );
 
 CREATE TABLE IF NOT EXISTS Mensaje (
-    id_mensaje INTEGER PRIMARY KEY,
+    id_mensaje INTEGER PRIMARY KEY AUTOINCREMENT,
     fecha TEXT NOT NULL,
     contenido TEXT,
     contenido_ia TEXT,
