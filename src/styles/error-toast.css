@@ -1,0 +1,32 @@
+/* styles/error-toast.css */
+.error-toast {
+  font-size: 20px !important;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+
+  min-width: 300px !important;
+  max-width: 400px !important;
+  height: auto !important;
+  padding: 16px;
+  border-radius: 7px !important;
+  background: linear-gradient(30deg, #f43722, #7e2f2f) !important;
+  color: rgb(251, 72, 72);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); */
+  animation: fadeIn 0.3s ease;
+  z-index: 2000;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
