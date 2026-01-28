@@ -1,7 +1,7 @@
 #Ejemplo de chatgpt
 #Crear el router del chatbot
 
-from fastapi import APIRouter, Request , Response
+from fastapi import APIRouter, Request, Response, UploadFile, File
 from pydantic import BaseModel
 from ..services.gemini_client import ask_gemini,ask_gemini_feedback
 from ..services import chat_service
@@ -25,6 +25,14 @@ def chat(req: ChatRequest):
 @router.post("/postchat/{user_id}")
 async def post_chat(user_id:int,chat_nombre,request: Request, response: Response):
    return await chat_service.post_chat(user_id,request,response,chat_nombre)
+
+
+@router.post("/upload/{chat_id}")
+async def upload_file(chat_id: int, file: UploadFile = File(...), request: Request = None, response: Response = None):
+    """Subir una foto al chat y guardar registro en la base de datos.
+    Guarda el archivo en `backend/uploads` y crea un mensaje con el nombre de fichero.
+    """
+    return await chat_service.post_message_file(chat_id, request, response, file)
 
 @router.post("/FeedBackPromt/{chat_id}")
 async def chat_ia_feedback(req:ChatRequest,chat_id: int,request: Request, response:Response):

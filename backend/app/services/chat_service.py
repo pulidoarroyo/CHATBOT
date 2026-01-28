@@ -1,5 +1,7 @@
 from fastapi import HTTPException, status
-from datetime import date
+from datetime import date, datetime
+import os
+import aiofiles
 
 
 async def chat_by_id(chat_id:int,request,response):
@@ -58,6 +60,39 @@ async def post_message(chat_id:int,request,response,contenido,contenido_ia):
         print("error al guardar mensaje")
 
         raise HTTPException(status_code = 500)
+    
+
+async def post_message_file(chat_id:int, request, response, file):
+    """Guardar archivo subido (foto) en backend/uploads y registrar mensaje.
+    - `file` es un UploadFile de FastAPI
+    """
+    db = request.app.state.db
+
+    uploads_dir = os.path.join(os.getcwd(), "backend", "uploads")
+    os.makedirs(uploads_dir, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    safe_filename = f"{timestamp}_{file.filename}"
+    file_path = os.path.join(uploads_dir, safe_filename)
+
+    try:
+        async with aiofiles.open(file_path, 'wb') as out_file:
+            content = await file.read()
+            await out_file.write(content)
+
+        # registrar en la tabla mensaje (contenido almacena el nombre/ubicación del fichero)
+        query = """ insert into mensaje (contenido,contenido_ia,fecha,fk_chat) values (?, ?, ?, ?) """
+        fecha = str(date.today())
+        params = (safe_filename, None, fecha, chat_id)
+
+        await db.execute(query, params)
+
+        response.status_code = 201
+        return {"data": "file uploaded", "file": safe_filename}
+
+    except Exception as e:
+        print("error al guardar archivo", e)
+        raise HTTPException(status_code=500)
     
 async def post_chat(user_id:int,request, response , nombre_chat):
     
