@@ -15,28 +15,17 @@ export default function InputArea({ onSendMessage }: InputAreaProps) {
     setInput("")
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
-    }
-  }
-
   return (
     <div className="input-area">
       <div className="input-container">
         <input
           type="text"
-          placeholder="What would you like to know?"
+          placeholder="Consulta tus dudas aquí..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress}
           className="message-input"
         />
         <div className="input-actions">
-          <button className="action-btn" title="Cambiar Modelo">
-            Cambiar Modelo
-          </button>
           <button className="action-btn" title="Attach file">
             <MdOutlineAttachFile size={20} />
           </button>

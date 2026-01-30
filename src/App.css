@@ -288,6 +288,7 @@ body {
 
 .message-wrapper.assistant {
   justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
 .message-bubble {
@@ -305,8 +306,31 @@ body {
 }
 
 .assistant-message {
-  color: var(--text-primary);
-  background-color: transparent;
+  color: #183147;
+  background-color: var(--accent-code);
+  flex-wrap: wrap;
+  padding: 2.5rem;
+  border-radius: 8px;
+  min-width: 300px;
+  max-width: 65vw;
+  margin-left: 1.5rem;
+}
+
+.assistant-message hr {
+  border: 0.5px solid #183147;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.assistant-message p {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.assistant-message li {
+  margin-left: 1.5rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
 }
 
 /* Code Block */
