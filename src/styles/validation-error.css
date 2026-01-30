@@ -1,0 +1,32 @@
+.validation-error-container {
+  background: transparent !important;
+  height: auto !important; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 300rem;
+  margin-top: 2rem !important;
+  margin-bottom: 0px !important;
+  padding:0% !important;
+}
+
+.validation-error-text {
+  color: #3ECD9B !important; 
+  font-size: 0.85rem;
+  font-weight: bold !important;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.validation-error-text.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0) !important; 
+}
+
+.validation-error-text.visible {
+  opacity: 1;
+  transform: translateY(0) !important; 
+}

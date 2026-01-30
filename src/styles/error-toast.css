@@ -10,8 +10,8 @@
   height: auto !important;
   padding: 16px;
   border-radius: 7px !important;
-  background: linear-gradient(30deg, #f43722, #7e2f2f) !important;
-  color: rgb(251, 72, 72);
+  background: linear-gradient(30deg, #000E18, #002a47) !important;
+  color: #CADBCA !important;
   display: flex;
   justify-content: space-between;
   align-items: center;
