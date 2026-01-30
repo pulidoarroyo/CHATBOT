@@ -1,6 +1,4 @@
 "use client"
-
-
 import "./App.css"
 
 function Home() {
@@ -9,7 +7,7 @@ function Home() {
     <div className="home-container">
         
         <nav id="header-home">
-            <img src="/public/Logo.svg" alt="logo" />
+           <a href="/" className="a" ><img src="/public/Logo.svg" alt="logo" className="h-8 w-auto"/> </a>
             <ul>
                 <li><a href="#courses-home">Cursos</a></li>
                 <li><a href="/register">Registrarse</a></li>
@@ -18,10 +16,10 @@ function Home() {
         </nav>
 
         <section>
-            <div className="landscape-container">  
+            <div className="landscape-container ">  
                 <p id="introduction-home">
-                    <h1> Consulta tus dudas con [Nombre Chatbot]</h1>
-                    Con [Nombre  Chatbot]  podrás realizar consultas acerca de la metodología a seguir en tus trabajos de investigación y tesis
+                    <h1> Consulta tus dudas con LogicCode AI</h1>
+                    Con LogicCode AI podrás realizar consultas acerca de la metodología a seguir en tus trabajos de investigación y tesis
                 </p>
                 <img id="introduction-img-home" src="/public/Illustration.svg" />
             </div>
@@ -207,7 +205,7 @@ function Home() {
                 </article>
 
                 <article className="courses-card-home">
-                    <img src="/public/deepseek.png" alt="logo" />
+                    <img src="/public/ollama.png" alt="logo" />
                     <div>
                         <h3>Agentes Inteligentes</h3>
                         <p className="details-courses"> 
