@@ -1,3 +1,4 @@
+@import 'tailwindcss';
 /* Color Paletta Modo Oscuro*/
 :root {
   --bg-primary: #1a454b; /* Fondo general */
@@ -37,11 +38,7 @@
   --border-input-btn: #AFAFAF; /* Borde de los botones del input */
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+
 
 body {
   background-color: var(--bg-primary);
@@ -586,6 +583,23 @@ justify-content: center;
   transition: box-shadow 0.5s ease-in-out;
 }
 
+.LIR-container2{
+  display:flex;
+  flex-direction: column;
+  width: 30vw;
+  min-width: 350px;
+  height: 90vh;
+  max-height: 600px;
+  align-items:center;
+  justify-content:center;
+  border: 3px solid #3ECD9B;
+  border-radius: 50px;
+  transition: box-shadow 0.5s ease-in-out;
+}
+.LIR-container2:hover{
+  box-shadow: 0px 0px 20px 1px #3EBBCD;
+  transition: box-shadow 0.5s ease-in-out;
+}
 .LIR-container:hover{
   box-shadow: 0px 0px 20px 1px #3EBBCD;
   transition: box-shadow 0.5s ease-in-out;
@@ -661,6 +675,18 @@ transition: margin 0.5s ease-in-out;
 }
 
 .LIR-container button{
+margin-top:7%;
+width: 70%;
+background: #3ECD9B;
+border-radius: 100px;
+font-family: 'Roboto', sans-serif;
+font-style: normal;
+font-weight: 400;
+font-size: 1.2rem;
+line-height: 25px;
+color: #010E18;
+}
+.LIR-container2 button{
 margin-top:7%;
 width: 70%;
 background: #3ECD9B;

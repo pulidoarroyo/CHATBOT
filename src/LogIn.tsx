@@ -41,7 +41,13 @@ function LogIn() {
         </svg>
         Contraseña
       </label>
-       <input type={showPassword ? "text" : "password"} id="password" name="password" placeholder=" " required/>
+       <input className="mb-4" type={showPassword ? "text" : "password"} id="password" name="password" placeholder=" " required/>
+       
+          <a href="/reset-password" 
+              className="mt-8 text-[12px] text-[#3ECD9B] opacity-80 hover:opacity-100 hover:underline transition-all "
+            >
+            ¿Olvidaste tu contraseña?
+          </a>
        <button id="eye-password" type="button" onClick={() => setShowPassword(!showPassword)}>{showPassword ? <FontAwesomeIcon icon={faEyeSlash} />:<FontAwesomeIcon icon={faEye} />}</button>
       <button type="submit" onClick={()=>{navigation('/chatbot') }}>INICIAR SESIÓN</button>
       <span>¿No tienes cuenta? <a href="/register">Regístrate aquí</a></span>
