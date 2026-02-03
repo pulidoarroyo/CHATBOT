@@ -1,5 +1,9 @@
 from fastapi import HTTPException, status
+from passlib.context import CryptContext  # <--- 1. Importar esto
 
+
+# 2. Configuración del Hashing 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 async def create_user(user,request,response):
 
@@ -8,11 +12,13 @@ async def create_user(user,request,response):
     if not db:
         raise HTTPException(status_code=500, detail="Base de datos no inicializada")
     
+    hashed_password = pwd_context.hash(user.password)
+
     query = """
         INSERT INTO Usuario (nombre, apellido, email, contraseña)
         VALUES (?, ?, ?, ?)
     """
-    params = (user.nombre ,user.apellido, user.email,user.password)
+    params = (user.nombre ,user.apellido, user.email,hashed_password)
 
     try:
 
