@@ -94,6 +94,8 @@ async def post_message_file(chat_id:int, request, response, file):
         print("error al guardar archivo", e)
         raise HTTPException(status_code=500)
     
+
+    
 async def post_chat(user_id:int,request, response , nombre_chat):
     
     db = request.app.state.db

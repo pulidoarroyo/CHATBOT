@@ -27,7 +27,7 @@ def ask_gemini_feedback(prompt: str,contexto):
     system_prompt = """
     en caso de proporcionarte un contexto necesito que le des continuidad a la conversacion
     siendo el consultor "contenido" y la respuesta de la ia "contenido_ia", esto es solo para que lleves el contexto
-    de la conmversacion. en tu respuesta no coloques "contenido_ia".
+    de la conversacion. en tu respuesta no coloques "contenido_ia".
     """
 
     response = model.generate_content(system_prompt +"\n contexto:"+ contexto +"\nPregunta: " + prompt)
