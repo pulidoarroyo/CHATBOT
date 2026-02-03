@@ -1,6 +1,5 @@
 from fastapi import HTTPException, status
-from passlib.context import CryptContext  # <--- 1. Importar esto
-
+from passlib.context import CryptContext  
 
 # 2. Configuración del Hashing 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
