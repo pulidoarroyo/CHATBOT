@@ -14,9 +14,16 @@ interface SidebarProps {
   activeChat: number
   onSelectChat: (id: number) => void
   onToggleSidebar: () => void
+  onOpenConfig: () => void // <--- 1. AGREGAMOS ESTA PROP
 }
 
-export default function Sidebar({ chats, activeChat, onSelectChat, onToggleSidebar }: SidebarProps) {
+export default function Sidebar({ 
+  chats, 
+  activeChat, 
+  onSelectChat, 
+  onToggleSidebar, 
+  onOpenConfig // <--- 2. LA RECIBIMOS AQUÍ
+}: SidebarProps) {
   const [chatsOpen, setChatsOpen] = useState(true)
   const [userModalOpen, setUserModalOpen] = useState(false)
 
@@ -56,7 +63,16 @@ export default function Sidebar({ chats, activeChat, onSelectChat, onToggleSideb
         </div>
       </div>
 
-      {userModalOpen && <UserModal onClose={() => setUserModalOpen(false)} />}
+      {/* 3. PASAMOS LA FUNCIÓN AL MENU PEQUEÑO */}
+      {userModalOpen && (
+        <UserModal 
+          onClose={() => setUserModalOpen(false)} 
+          onOpenConfig={() => {
+            setUserModalOpen(false); // Cerramos el menú pequeño
+            onOpenConfig();          // Abrimos el modal grande
+          }}
+        />
+      )}
     </aside>
   )
 }
