@@ -49,33 +49,25 @@ async def create_user(user,request,response):
         )
 
 async def login_user(user, request, response):
-    db = request.app.state.db # Asegúrate de usar el nombre correcto que pusiste en main.py
+    db = request.app.state.db
 
     query = "SELECT id_usuario, nombre, apellido, contraseña FROM Usuario WHERE email = ?"
 
     try:
         result = await db.execute(query, (user.email, ))
-
-        #print(result)
-
         rows = result 
 
         if not rows:
-            response.status_code = 400
-            return {"message": "usuario no encontrado", "info": None}
-            #return response("message" : "usuario no encontrado", status_code = 400)
+            raise HTTPException(status_code=400, detail="Usuario o contraseña incorrectos")
             
         row = rows[0]
-
-        try:
-            user_dict = dict(row)
-        except:
-            pass
-
-        if user_dict.get("contraseña") != user.password:
-             response.status_code = 400
-             return {"message": "credenciales inválidas", "info": None}
+        user_dict = dict(row)
         
+        es_valida = pwd_context.verify(user.password, user_dict.get("contraseña"))
+
+        if not es_valida:
+            raise HTTPException(status_code=400, detail="Usuario o contraseña incorrectos")
+
         del user_dict["contraseña"]
 
         return {
@@ -84,8 +76,10 @@ async def login_user(user, request, response):
         }
 
     except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
         print(f"Error en login: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
 
 
 # ----> ANA <------
