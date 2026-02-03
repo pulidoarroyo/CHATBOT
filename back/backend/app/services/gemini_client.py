@@ -1,6 +1,3 @@
-#Ejemplo de chatgpt
-#Cliente para Gemini
-
 import google.generativeai as genai
 from ..config.load_env import settings
 

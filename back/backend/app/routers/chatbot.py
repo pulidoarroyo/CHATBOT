@@ -1,6 +1,3 @@
-#Ejemplo de chatgpt
-#Crear el router del chatbot
-
 from fastapi import APIRouter, Request, Response, UploadFile, File
 from pydantic import BaseModel
 from ..services.gemini_client import ask_gemini,ask_gemini_feedback
@@ -25,7 +22,6 @@ def chat(req: ChatRequest):
 @router.post("/postchat/{user_id}")
 async def post_chat(user_id:int,chat_nombre,request: Request, response: Response):
    return await chat_service.post_chat(user_id,request,response,chat_nombre)
-
 
 @router.post("/upload/{chat_id}")
 async def upload_file(chat_id: int, file: UploadFile = File(...), request: Request = None, response: Response = None):
@@ -52,11 +48,6 @@ async def chat_ia_feedback(req:ChatRequest,chat_id: int,request: Request, respon
 async def chat_messages_by_id(chat_id: int ,request: Request, response: Response):
     return await chat_service.chat_by_id(chat_id,request,response)
 
-#uvicorn app.main:app --reload
-#http://localhost:8000/docs
-
-
-
 @router.get("/all")
 async def get_all_chats(request: Request, response: Response):
     """
@@ -64,8 +55,6 @@ async def get_all_chats(request: Request, response: Response):
     URL: GET /chatbot/chat/
     """
     return await chat_service.get_all_chats(request, response)
-
-
 
 @router.get("/user/{user_id}")
 async def get_chats_by_user(user_id: int, request: Request, response: Response):
