@@ -802,6 +802,15 @@ font-size:1.8rem;
   margin-top:0.7rem;
 }
 
+.home-container section #gemini{
+  font-family: 'Roboto', sans-serif;
+  color:#CADBCA;
+  text-align: center;
+  font-size:1rem;
+  min-width: 300px;
+  margin-top:0.7rem;
+}
+
 .landscape-container{
   display:flex;
   flex-direction:row;
@@ -900,6 +909,8 @@ animation: pulso 3s ease-in-out infinite;
 
 .model-card-home{
   display:flex;
+  align-items:center;
+  justify-content: center;
   width: fit-content;
   min-width: 315px;
   height: auto;
@@ -907,20 +918,11 @@ animation: pulso 3s ease-in-out infinite;
   flex-direction: row;
   color:#CADBCA;
   border-radius:30px;
-  background-color: #237968;
-  margin:3%;
-  padding: 1.5rem;
   white-space: normal;
   overflow-wrap: break-word;
   transition: all 0.4s ease-in-out;
 }
 
-.model-card-home:hover{
-background: #07181E;
-box-shadow: 0px 4px 20px 7px #237968;
-transform: scale(1.1);
-transition: all 0.4s ease-in-out;
-}
 
 .model-card-home p{
 display: flex;
@@ -929,9 +931,9 @@ width: 20vw;
 }
 
 .model-card-home svg{
-  margin-top:0.5rem;
-  width:80%;
-  height: 80%;
+  width:100%;
+  height: 100%;
+  animation: pulso 3s ease-in-out infinite;
 }
   
 /*Estilos cursos en home*/
@@ -1091,13 +1093,9 @@ border: 1px solid #3ecd9b3c;
     height: auto;
   }
 
-  .model-card-home:hover{
-    transform: scale(1.05);
-  }
   .model-card-home svg{
-    margin-top:0.5rem;
-    width:60%;
-    height: 60%;
+    width:100%;
+    height: 100%;
   }
   
   .courses-card-home{
