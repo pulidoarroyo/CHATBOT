@@ -17,20 +17,20 @@ async def create_user(user,request,response):
         INSERT INTO Usuario (nombre, apellido, email, contraseña)
         VALUES (?, ?, ?, ?)
     """
-    params = (user.nombre ,user.apellido, user.email,hashed_password)
 
+    query2 = """
+        SELECT id_usuario, nombre, apellido, email FROM Usuario WHERE email = ?
+    """
+    params = (user.nombre ,user.apellido, user.email,hashed_password)
+    
     try:
 
         await db.execute(query,params)
-
+        user_response = await db.execute(query2, (user.email,))
         response.status_code = 201
         return {
             "message": "Usuario creado exitosamente", 
-            "user": {
-                     "name": user.nombre,
-                     "apellido": user.apellido,
-                       "email": user.email,
-                         }
+            "user": user_response[0]
         }
     
     except Exception as e:
