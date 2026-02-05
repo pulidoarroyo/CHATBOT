@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import "./App.css"
+import "./Olvide Contraseña/ojo.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate } from 'react-router-dom';

@@ -1,0 +1,14 @@
+/* Elimina el icono de revelar contraseña en Microsoft Edge */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+/* Elimina el icono de revelar contraseña en otros navegadores Chromium (si llegara a aparecer) */
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
