@@ -12,7 +12,13 @@ import "./styles/error-toast.css";
 import "./styles/login.module.css";
 import axios from "axios"
 
+import { useAuth } from './hooks/useAuth';
+
+import { type User } from "./services/login.service";
+
 import { useNavigate } from 'react-router-dom';
+
+import { Navigate } from 'react-router-dom';
 
 function LogIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,11 +26,13 @@ function LogIn() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
-
+  const { login } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const { error, showError, clearError } = useErrorToast();
 
   const navigate = useNavigate();
+  
 
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
@@ -41,6 +49,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     if (response.message && response.message.toLowerCase().includes("error")) {
       showError(response.message);
     } else {
+      login(response.info);
       navigate('/chatbot');
     }
   } catch (err: unknown) { 
@@ -61,6 +70,9 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }
 };
 
+  if (isAuthenticated) {
+    return <Navigate to="/chatbot" replace />;
+  }
 
   return (
   

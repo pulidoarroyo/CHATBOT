@@ -8,6 +8,7 @@ export interface RegisterRequestDTO {
 }
 
 export interface UserRegisterDTO {
+  id_usuario: number
   nombre: string;
   apellido: string;
   email: string;

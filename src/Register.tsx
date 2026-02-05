@@ -14,12 +14,15 @@ import './styles/validation-error.css';
 import axios from "axios";
 
 import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+
+import { useAuth } from './hooks/useAuth';
+
 
 function Register() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [rightPassword, setRightPassword] = useState(false);
-  
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
@@ -33,6 +36,9 @@ function Register() {
   const [ConfirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+
+  const { login } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,7 +55,7 @@ function Register() {
     setLoading(true);
 
     try {
-      const response = await registerService({
+      const response = await registerService({ 
         nombre: nombre,
         apellido: apellido,
         email: email,
@@ -59,8 +65,9 @@ function Register() {
       if (response.message && response.message.toLowerCase().includes("error")) {
         showError(response.message);
       } else {
-        setSuccess("¡Entrando!");
-
+        //setSuccess("¡Entrando!");
+        
+        login(response.user);
         setTimeout(() => {
         navigate('/chatbot');
         }, 2000);
@@ -91,6 +98,10 @@ function Register() {
       }
     }
   };
+
+  if (isAuthenticated) {
+    return <Navigate to="/chatbot" replace />;
+  }
 
   return (
      <div className="BG-loginRegister">

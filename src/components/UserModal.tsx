@@ -1,17 +1,27 @@
 import type React from "react"
 import { MdHelp } from "react-icons/md"
 import { FiLogOut } from "react-icons/fi"
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 interface UserModalProps {
   onClose: () => void
 }
 
 export default function UserModal({ onClose }: UserModalProps) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose()
     }
   }
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <>
@@ -36,7 +46,7 @@ export default function UserModal({ onClose }: UserModalProps) {
               <span className="option-icon">
                 <FiLogOut size={18} />
               </span>
-              <span>Cerrar sesión</span>
+              <button onClick={handleLogout}>Cerrar sesión</button>
             </button>
           </div>
 

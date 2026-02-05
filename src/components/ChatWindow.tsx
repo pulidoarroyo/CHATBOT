@@ -8,6 +8,10 @@ import { promptService } from "../services/prompt.service"
 import { useErrorToast } from "../hooks/useErrorToast";
 import axios from "axios"
 import ReactMarkdown from 'react-markdown'
+import { ChatbotService } from "../services/postchat.service";
+import { SessionService } from "../services/session.service";
+import type {  PostchatParams } from "../api/postchat.api";
+
 
 interface Message {
   id: number
