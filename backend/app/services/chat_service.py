@@ -3,6 +3,51 @@ from datetime import date, datetime
 import os
 import aiofiles
 
+async def get_chat_history(chat_id: int, request, response):
+    db = request.app.state.db
+
+    query = """ 
+        SELECT fecha, contenido, contenido_ia 
+        FROM Mensaje 
+        WHERE fk_chat = ? 
+        ORDER BY fecha ASC 
+    """
+    
+    try:
+        result = await db.execute(query, (chat_id, ))
+        rows = result
+        
+        if not rows:
+            response.status_code = 200
+            return {"message": "Chat vacío", "data": []}
+        
+        history = []
+        for row in rows:
+            msg = dict(row)
+            
+            history.append({
+                "role": "user",
+                "content": msg["contenido"],
+                "timestamp": msg["fecha"]
+            })
+            
+            if msg["contenido_ia"]:
+                history.append({
+                    "role": "assistant",
+                    "content": msg["contenido_ia"],
+                    "timestamp": msg["fecha"]
+                })
+
+        response.status_code = 200
+        return {
+            "chat_id": chat_id,
+            "count": len(history),
+            "messages": history
+        }
+            
+    except Exception as e:
+        print(f"Error al reconstruir historial: {e}")
+        raise HTTPException(status_code=500, detail="Error interno al procesar el historial")
 
 async def chat_by_id(chat_id:int,request,response):
 

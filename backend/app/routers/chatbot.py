@@ -23,6 +23,10 @@ def chat(req: ChatRequest):
 async def post_chat(user_id:int,chat_nombre,request: Request, response: Response):
    return await chat_service.post_chat(user_id,request,response,chat_nombre)
 
+@router.get("/historial{chat_id}")
+async def get_chat_history(chat_id: int, request: Request, response: Response):
+    return await chat_service.get_chat_history(chat_id, request, response)
+
 @router.post("/upload/{chat_id}")
 async def upload_file(chat_id: int, file: UploadFile = File(...), request: Request = None, response: Response = None):
     """Subir una foto al chat y guardar registro en la base de datos.
