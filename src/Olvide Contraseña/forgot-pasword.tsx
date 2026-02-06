@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'; // Necesitamos useState
 import { useNavigate, Link } from 'react-router-dom';
+import emailjs from '@emailjs/browser';
 import "../App.css";
 
 function ForgotPassword() {
@@ -35,6 +36,47 @@ function ForgotPassword() {
       } 
     });
   };
+
+ const handleSubmit2 = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
+    const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    const expirationTime = new Date(Date.now() + 15 * 60000).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  
+    const templateParams = {
+      email: email,
+      passcode: generatedCode, 
+      time: expirationTime, 
+    };
+  
+    console.log("Intentando enviar a:", templateParams.email); 
+
+    emailjs.send(
+      'service_txk20kl', 
+      'template_q45o8zw', 
+      templateParams, 
+      'dKMmZA0vvBsys8UfZ'
+    )
+    .then(() => {
+      alert("Código enviado con éxito");
+      
+      navigation('/verify-code', { 
+      state: { 
+        userEmail: email, 
+        secretCode: generatedCode 
+      } 
+    });
+    })
+    .catch((error) => {
+      console.error("Error al enviar el correo:", error);
+      alert("Hubo un error al enviar el código.");
+    });
+  };
+
     return (
     <div className="BG-loginRegister">
       <div className="LIR-container">

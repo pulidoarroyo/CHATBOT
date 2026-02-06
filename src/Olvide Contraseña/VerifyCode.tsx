@@ -46,6 +46,7 @@ function VerifyCode() {
     }
   };
 
+
 return (
     <div className="BG-loginRegister">
       <div className="LIR-container2" style={{ height: 'auto', minHeight: '600px', padding: '2rem 0' }}>
