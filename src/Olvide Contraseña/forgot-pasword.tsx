@@ -6,7 +6,7 @@ import "../App.css";
 function ForgotPassword() {
   const navigation = useNavigate();
   
-  // 1. Estado para capturar el correo
+  
   const [email, setEmail] = useState<string>("");
 
   const validateEmail = (email: string): boolean => {
@@ -90,7 +90,7 @@ function ForgotPassword() {
 
         <h1 style={{ textAlign: 'center', padding: '0 10px' }}>¿Olvidaste tu clave?</h1>
 
-        <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <form onSubmit={handleSubmit2} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           
           <label htmlFor="email">Correo Electrónico</label>
           <input 
