@@ -132,10 +132,16 @@ body {
   transform: rotate(180deg);
 }
 
-.chat-list {
+.sidebar-section .chat-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  scrollbar-width: 1rem;
+  scroll-margin: 1rem;
+  scroll-behavior: smooth;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  max-height: 30%;
 }
 
 .chat-item {

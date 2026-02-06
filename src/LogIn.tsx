@@ -27,6 +27,8 @@ function LogIn() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const { login } = useAuth();
+  const { getChatId} = useAuth(); 
+  const { updateChatId} = useAuth(); 
   const { isAuthenticated } = useAuth();
 
   const { error, showError, clearError } = useErrorToast();
@@ -50,6 +52,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       showError(response.message);
     } else {
       login(response.info);
+      //updateChatId(25);
+      console.log(getChatId());
       navigate('/chatbot');
     }
   } catch (err: unknown) { 
@@ -63,8 +67,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       } else {
         // Error inesperado (JS / lógica)
         showError("Ocurrió un error inesperado.");
-  }
-
+      }
+      
   }finally {
     setLoading(false);
   }

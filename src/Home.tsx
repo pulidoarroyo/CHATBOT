@@ -1,6 +1,3 @@
-"use client"
-
-
 import "./App.css"
 
 function Home() {
@@ -13,7 +10,9 @@ function Home() {
             <ul>
                 <li><a href="#courses-home">Cursos</a></li>
                 <li><a href="/register">Registrarse</a></li>
+                <li><a href="/test">Registrarse</a></li>
                 <li><a id="button-login" href="/login">Iniciar Sesión</a></li>
+              
             </ul>
         </nav>
 

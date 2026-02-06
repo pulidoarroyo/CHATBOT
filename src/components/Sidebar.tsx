@@ -7,21 +7,25 @@ import { useAuth } from '../hooks/useAuth';
 import { ChatbotService } from "../services/postchat.service";
 import { SessionService } from "../services/session.service";
 import type { PostchatParams } from "../api/postchat.api";
+import type { getChatByIdService } from "../services/postchat.service";
+import type { GetChatIdParams } from "../services/postchat.service";
+import type { getChatByUserService } from "../api/getchatuser.api";
+import type { ChatDTO } from "./api/getchatuser.api";
 
-
-interface Chat {
+/*interface Chat {
   id: number
   name: string
-}
+}*/
 
 interface SidebarProps {
-  chats: Chat[]
+  chats: ChatDTO[]
   activeChat: number
   onSelectChat: (id: number) => void
   onToggleSidebar: () => void
+  refetchChats: () => Promise<void>;
 }
 
-export default function Sidebar({ chats, activeChat, onSelectChat, onToggleSidebar }: SidebarProps) {
+export default function Sidebar({ chats, activeChat, onSelectChat, onToggleSidebar, refetchChats }: SidebarProps) {
   const [chatsOpen, setChatsOpen] = useState(true)
   const [userModalOpen, setUserModalOpen] = useState(false)
   const { user, logout } = useAuth();
@@ -35,7 +39,6 @@ export default function Sidebar({ chats, activeChat, onSelectChat, onToggleSideb
     setLoading(true);
 
     // Definir nombre a chat
-    setChatNombre("hola");
 
     const params: PostchatParams = {
       userId: SessionService.getUserId(),
@@ -46,10 +49,7 @@ export default function Sidebar({ chats, activeChat, onSelectChat, onToggleSideb
       const response = await ChatbotService.createChat(params);
 
       console.log("Chat creado:", response);
-      // aquí puedes:
-      // - redirigir
-      // - actualizar estado global
-      // - agregar el chat a una lista
+
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -60,6 +60,15 @@ export default function Sidebar({ chats, activeChat, onSelectChat, onToggleSideb
       setLoading(false);
     }
   };
+
+
+  const handleActiveChat = async () => {
+
+
+
+
+    
+  }
 
 
   return (
@@ -75,16 +84,17 @@ export default function Sidebar({ chats, activeChat, onSelectChat, onToggleSideb
             {chatsOpen ? <RiArrowUpSLine size={16} /> : <RiArrowDownSLine size={16} />}
           </span>
         </div>
+        <button onClick={refetchChats}>Actualizar Chats</button>
         {chatsOpen && (
           <div className="chat-list">
             {chats.map((chat) => (
               <div
-                key={chat.id}
-                className={`chat-item ${activeChat === chat.id ? "active" : ""}`}
-                onClick={() => onSelectChat(chat.id)}
+                key={chat.id_chat}
+                className={`chat-item ${activeChat === chat.id_chat ? "active" : ""}`}
+                onClick={() => onSelectChat(chat.id_chat)}
               >
                 <span className="chat-icon">📄</span>
-                {chat.name}
+                {chat.nombre}
               </div>
             ))}
           </div>
