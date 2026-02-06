@@ -105,7 +105,7 @@ function Home() {
                         <p className="details-courses"> 
                             Domina la IA que está revolucionando el mercado. DeepSeek es una inteligencia artificial de código abierto diseñada para el razonamiento lógico avanzado y la programación.
                         </p>
-                        <a href="https://youtu.be/h_D3VFfhvs4?si=inw0gjEHUDP7I51J">
+                        <a href="https://drive.google.com/drive/folders/1rp7QYL1pAEo4J1tZ7uPWCH_epnQde_3x">
                             Ver curso &gt;
                         </a>
                     </div>
@@ -118,7 +118,7 @@ function Home() {
                         <p className="details-courses"> 
                             Aprende a verificar datos con precisión, citar referencias bibliográficas y estructurar investigaciones profundas con una curaduría de contenido impecable.
                         </p>
-                        <a href="https://youtu.be/h_D3VFfhvs4?si=inw0gjEHUDP7I51J">
+                        <a href="https://youtube.com/watch?v=D5v6UfpxxWM&feature=shared">
                             Ver curso &gt;
                         </a>
                     </div>
@@ -131,7 +131,7 @@ function Home() {
                         <p className="details-courses"> 
                            Descubre el potencial de los agentes inteligentes para ejecutar tareas complejas sin supervisión constante, transformando radicalmente tu flujo de trabajo.
                         </p>
-                        <a href="https://youtu.be/h_D3VFfhvs4?si=inw0gjEHUDP7I51J">
+                        <a href="https://drive.google.com/file/d/1yaSenL8ho-I71y_u3t3yAxh7-uGNrYE2/view?usp=sharing">
                             Ver curso &gt;
                         </a>
                     </div>
