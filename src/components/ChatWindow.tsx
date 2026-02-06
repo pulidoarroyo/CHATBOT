@@ -151,17 +151,17 @@ export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowP
         FFirstMessageSent(true);
 
       }else{
-        // 3. CONTACTAR A EP FEEDBACK PROMPT SERVICE 
-        //const id_chat = getChatId(); CULPABLE
+        
+        const id_chat = SessionService.getChatId(); //CULPABLE
         //const id_chat = Number(getChatId());
         //const id_chat = chat;
-        console.log("antes:"+chat.current);
+        console.log("antes:"+id_chat);
         await sleep(2000);
-        console.log("despues:"+chat.current);
+        console.log("despues:"+id_chat);
         
-      
+        // 3. CONTACTAR A EP FEEDBACK PROMPT SERVICE 
         const paramsPrompt: promptParams = {
-          chatId: chat.current
+          chatId: id_chat
         };
         try{
           const response2 = await promptService(paramsPrompt, {
