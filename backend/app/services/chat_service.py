@@ -147,22 +147,24 @@ async def post_chat(user_id:int,request, response , nombre_chat):
 
     query = """ insert into chat (nombre,fk_usuario) values (?, ?) """
 
+    query2 = """ SELECT id_chat FROM chat WHERE nombre = ? AND fk_usuario = ? ORDER BY id_chat DESC LIMIT 1 """
+
     params = (nombre_chat,user_id)
 
     try:
         await db.execute(query,params)
-
+        chat_id= await db.execute(query2, params)
         print("chat guardado")
         
         response.status_code = 201
         return {
-            "data":"chat creado"
+            "data":"chat creado",
+            **chat_id[0]
         }
         
     except Exception as e:
 
         print("error al guardar chat")
-
         raise HTTPException(status_code = 500)
 
 #Obterner todos los chats 
