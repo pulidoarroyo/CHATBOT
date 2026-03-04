@@ -107,39 +107,59 @@ async def post_message(chat_id:int,request,response,contenido,contenido_ia):
         raise HTTPException(status_code = 500)
     
 
-async def post_message_file(chat_id:int, request, response, file):
-    """Guardar archivo subido (foto) en backend/uploads y registrar mensaje.
-    - `file` es un UploadFile de FastAPI
-    """
+async def post_message_file(chat_id: int, request, response, file):
+    """Guardar archivo subido (PDF/Word/Docs) en backend/uploads y registrar mensaje."""
+    
     db = request.app.state.db
 
+    # 1. Definir extensiones permitidas
+    ALLOWED_EXTENSIONS = {".pdf", ".doc", ".docx", ".txt", ".odt"}
+    file_extension = os.path.splitext(file.filename)[1].lower()
+
+    if file_extension not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Extensión no permitida. Solo se aceptan: {', '.join(ALLOWED_EXTENSIONS)}"
+        )
+
+    # 2. Configurar rutas
+    # Asegúrate de que la carpeta existe
     uploads_dir = os.path.join(os.getcwd(), "backend", "uploads")
     os.makedirs(uploads_dir, exist_ok=True)
 
+    # 3. Crear nombre seguro y único
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    safe_filename = f"{timestamp}_{file.filename}"
+    # Limpiamos el nombre original de espacios para evitar problemas en URLs
+    clean_name = file.filename.replace(" ", "_")
+    safe_filename = f"{timestamp}_{clean_name}"
     file_path = os.path.join(uploads_dir, safe_filename)
 
     try:
+        # 4. Guardar el archivo físicamente
         async with aiofiles.open(file_path, 'wb') as out_file:
             content = await file.read()
             await out_file.write(content)
 
-        # registrar en la tabla mensaje (contenido almacena el nombre/ubicación del fichero)
-        query = """ insert into mensaje (contenido,contenido_ia,fecha,fk_chat) values (?, ?, ?, ?) """
-        fecha = str(date.today())
-        params = (safe_filename, None, fecha, chat_id)
-
+        # 5. Registrar en la base de datos
+        # Guardamos el nombre del archivo en 'contenido'
+        query = """ INSERT INTO mensaje (contenido, contenido_ia, fecha, fk_chat) VALUES (?, ?, ?, ?) """
+        fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S") # Mejor usar datetime completo si el campo lo permite
+        
+        params = (safe_filename, None, fecha_actual, chat_id)
         await db.execute(query, params)
 
         response.status_code = 201
-        return {"data": "file uploaded", "file": safe_filename}
+        return {
+            "status": "success",
+            "message": "Archivo guardado correctamente",
+            "file_name": safe_filename,
+            "type": file_extension
+        }
 
     except Exception as e:
-        print("error al guardar archivo", e)
-        raise HTTPException(status_code=500)
-    
-
+        print(f"Error al guardar archivo: {e}")
+        # Si hubo un error y el archivo se llegó a crear, podrías intentar borrarlo aquí
+        raise HTTPException(status_code=500, detail="Error interno al procesar el archivo")
     
 async def post_chat(user_id:int,request, response , nombre_chat):
     

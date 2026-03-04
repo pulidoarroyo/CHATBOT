@@ -29,11 +29,10 @@ async def get_chat_history(chat_id: int, request: Request, response: Response):
 
 @router.post("/upload/{chat_id}")
 async def upload_file(chat_id: int, file: UploadFile = File(...), request: Request = None, response: Response = None):
-    """Subir una foto al chat y guardar registro en la base de datos.
+    """Subir un documento (PDF, DOCX, etc.) al chat y guardar registro en la base de datos.
     Guarda el archivo en `backend/uploads` y crea un mensaje con el nombre de fichero.
     """
     return await chat_service.post_message_file(chat_id, request, response, file)
-
 @router.post("/FeedBackPromt/{chat_id}")
 async def chat_ia_feedback(req:ChatRequest,chat_id: int,request: Request, response:Response):
     contexto = await chat_service.chat_by_id(chat_id,request,response)
