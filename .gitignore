@@ -21,4 +21,4 @@ docs/_build/
 *.egg
 dist/
 build/
-
+uploads/

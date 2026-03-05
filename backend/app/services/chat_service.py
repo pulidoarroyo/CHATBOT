@@ -49,39 +49,44 @@ async def get_chat_history(chat_id: int, request, response):
         print(f"Error al reconstruir historial: {e}")
         raise HTTPException(status_code=500, detail="Error interno al procesar el historial")
 
-async def chat_by_id(chat_id:int,request,response):
-
-
+async def chat_by_id(chat_id: int, request, response):
     db = request.app.state.db
-
-    query = """ select fecha, contenido, contenido_ia from Mensaje where fk_chat = ? """
+    # Traemos los datos
+    query = "SELECT contenido, contenido_ia FROM Mensaje WHERE fk_chat = ?"
     
-
     try:
-        result = await db.execute(query, (chat_id, ))
-
-        rows = result
         
+        rows = await db.execute(query, (chat_id,))
+
         if not rows:
-            return {"message": "chat sin mensajes", "info": None}
+           # response.status_code = 404
+            return [] 
         
         messages_list = []
-
         for row in rows:
-            
-            messages_dict = dict(row)
+            messages_list = []
+        for row in rows:
+            contenido_user = row["contenido"]
+            contenido_ia = row["contenido_ia"]
 
-            messages_list.append(messages_dict)
+            if contenido_user:
+                messages_list.append({
+                    "role": "user", 
+                    "parts": [{"text": str(contenido_user)}]
+                })
+            
+            if contenido_ia:
+                messages_list.append({
+                    "role": "model", 
+                    "parts": [{"text": str(contenido_ia)}]
+                })
 
         response.status_code = 202
-        return {
-            "data":messages_list
-            }
+        return messages_list
             
     except Exception as e:
-        print("error al buscar mensajes")
-        raise HTTPException(status_code = 400)
-
+        print(f"Error al buscar mensajes: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 async def post_message(chat_id:int,request,response,contenido,contenido_ia):
@@ -130,7 +135,7 @@ async def post_message_file(chat_id: int, request, response, file):
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     # Limpiamos el nombre original de espacios para evitar problemas en URLs
     clean_name = file.filename.replace(" ", "_")
-    safe_filename = f"{timestamp}_{clean_name}"
+    safe_filename = f"test_file.{file_extension}"
     file_path = os.path.join(uploads_dir, safe_filename)
 
     try:
@@ -146,13 +151,14 @@ async def post_message_file(chat_id: int, request, response, file):
         
         params = (safe_filename, None, fecha_actual, chat_id)
         await db.execute(query, params)
-
+        
         response.status_code = 201
         return {
             "status": "success",
             "message": "Archivo guardado correctamente",
             "file_name": safe_filename,
-            "type": file_extension
+            "type": file_extension,
+            "file_path": file_path
         }
 
     except Exception as e:

@@ -33,11 +33,12 @@ async def upload_file(chat_id: int, file: UploadFile = File(...), request: Reque
     Guarda el archivo en `backend/uploads` y crea un mensaje con el nombre de fichero.
     """
     return await chat_service.post_message_file(chat_id, request, response, file)
+
 @router.post("/FeedBackPromt/{chat_id}")
 async def chat_ia_feedback(req:ChatRequest,chat_id: int,request: Request, response:Response):
-    contexto = await chat_service.chat_by_id(chat_id,request,response)
-    json_string = json.dumps(contexto)
-    answer = ask_gemini_feedback(req.message,json_string)
+    history = await chat_service.chat_by_id(chat_id,request,response)
+    #json_string = json.dumps(contexto)
+    answer =  ask_gemini_feedback(req.message,history) # type: ignore
     await chat_service.post_message(chat_id,request,response,req.message,answer)
     if not answer:
         return{

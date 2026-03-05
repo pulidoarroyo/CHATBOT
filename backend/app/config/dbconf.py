@@ -6,7 +6,7 @@ import inspect
 import asyncio
 from typing import Any, Optional, List, Dict
 
-from backend.app.schemas.schemas import SCHEMA_SQL
+from app.schemas.schemas import SCHEMA_SQL
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

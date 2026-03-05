@@ -1,9 +1,29 @@
+from fastapi import HTTPException
 import google.generativeai as genai
+from google import genai
+from google.genai import types
 from ..config.load_env import settings
+import os
+import time
 
-genai.configure(api_key=settings.GEMINI_API_KEY)
+#genai.configure(api_key=settings.GEMINI_API_KEY)  # type: ignore
 
-model = genai.GenerativeModel("gemini-2.5-flash")
+client = genai.Client(api_key=settings.GEMINI_API_KEY)
+
+SYSTEM_PROMPT = """
+Eres un asistente académico. Solo puedes responder preguntas sobre:
+- trabajos de grado
+- metodología de investigación
+- estructura de proyectos académicos
+- redacción académica
+- veracidad de la informacion
+
+IMPORTANTE: Tienes la capacidad de leer y analizar los documentos que el usuario te adjunta. Basate en los archivos adjuntos para responder.
+IMPORTANTE: Si el usuario te pide ayuda sobre el documento puedes buscar en otras fuentes como internet
+Si la pregunta no es académica, responde cortésmente que no puedes ayudar.
+"""
+
+#model = genai.GenerativeModel("gemini-2.5-flash") #system_instruction=SYSTEM_PROMT)  # type: ignore
 
 
 def ask_gemini(prompt: str):
@@ -17,28 +37,55 @@ def ask_gemini(prompt: str):
     Si la pregunta no es académica, responde cortésmente que no puedes ayudar.
     """
 
-    response = model.generate_content(system_prompt + "\nPregunta: " + prompt)
-    return response.text
+    #response = model.generate_content(system_prompt + "\nPregunta: " + prompt)
+    #return response.text
 
 
-def ask_gemini_feedback(prompt: str, contexto):
-    # Personalización del chatbot
-    system_prompt ="""
-    Eres un Consultor de Investigación y Revisor Académico Senior. Tu objetivo es asistir exclusivamente en la creación, revisión y mejora de trabajos académicos (tesis, artículos, ensayos, protocolos de investigación).
+def ask_gemini_feedback(prompt: str, history: list = None):  # type: ignore
 
-    ### TUS REGLAS DE ORO:
-    1. **Alcance Estricto:** Solo respondes sobre: metodología de investigación, redacción científica, normas de citación (APA, IEEE, Vancouver), análisis de datos y estructura de proyectos. Solo Si el tema es fuera de este ámbito es decir la pregunta no esta relacionada ni sigue la conversacion de un proyecto academico, di: "Mi especialización se limita al asesoramiento académico. ¿En qué puedo ayudarte respecto a tu investigación?".
-    2. **Tono Profesional:** Tu lenguaje debe ser formal, preciso, crítico y constructivo. Evita coloquialismos.
-    3. **Análisis Crítico:** No solo respondas preguntas; evalúa la lógica de los argumentos, la claridad de los objetivos y la coherencia entre el problema y la metodología.
-    4. **Manejo del Contexto:** Se te proporcionará un historial bajo las etiquetas "consultor" (usuario) y "contenido_ia" (tú). Úsalos para dar continuidad sin repetir información ya dicha. Bajo ninguna circunstancia incluyas la etiqueta "contenido_ia" en tu respuesta final.
+    if history is None:
+        history = []
 
-    ### ESTRUCTURA DE RESPUESTA (Si aplica):
-    - **Observación:** Identifica el punto a mejorar.
-    - **Sugerencia Académica:** Explica el "por qué" basado en estándares científicos.
-    - **Ejemplo de Mejora:** Propón una redacción o estructura técnica superior.
-    """
-
-    response = model.generate_content(
-        system_prompt + "\n historial de conversacion:" + contexto + "\n Pregunta: " + prompt
+    chat_config = types.GenerateContentConfig(
+        system_instruction = SYSTEM_PROMPT
     )
+    
+    chat = client.chats.create(
+        model='gemini-2.5-flash',
+        history=history,
+        config = chat_config
+        )
+    
+    DIR = os.getcwd()
+    
+    file_path = os.path.join(DIR, "backend", "uploads", "test_file..pdf")
+
+    if os.path.exists(file_path):
+        try:
+            print(f"Subiendo archivo a los servidores de Gemini...")
+            archivo_gemini = client.files.upload(file=file_path)
+            
+            print("Esperando a que Gemini procese el PDF...")
+            while archivo_gemini.state.name == "PROCESSING":  # type: ignore
+                print(".", end="", flush=True)
+                time.sleep(2)
+                archivo_gemini = client.files.get(name=archivo_gemini.name) # type: ignore
+            
+            print("\n¡Archivo listo y activo!")
+            
+           # prompt_forzado = f"Basándote estrictamente en el documento adjunto, responde a la siguiente consulta del usuario: {prompt}"
+            
+            response = chat.send_message([archivo_gemini, prompt])
+            
+            #os.remove(file_path) 
+            #print("Archivo local eliminado con éxito.")
+            
+        except Exception as e:
+            print(f"Error procesando el archivo con Gemini: {e}")
+            response = chat.send_message(prompt)
+            
+    else:
+        
+        response = chat.send_message(prompt)
+        
     return response.text
