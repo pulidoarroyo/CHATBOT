@@ -125,13 +125,13 @@ function Home() {
                 </article>
 
                 <article className="courses-card-home">
-                    <img src="/public/deepseek.png" alt="logo" />
+                    <img src="/public/ai.svg" alt="logo" />
                     <div>
                         <h3>Agentes Inteligentes</h3>
                         <p className="details-courses"> 
                            Descubre el potencial de los agentes inteligentes para ejecutar tareas complejas sin supervisión constante, transformando radicalmente tu flujo de trabajo.
                         </p>
-                        <a href="https://drive.google.com/file/d/1yaSenL8ho-I71y_u3t3yAxh7-uGNrYE2/view?usp=sharing">
+                        <a href="https://drive.google.com/drive/u/1/folders/1V240J6_oiN0te9S-1mMHSIzMRtf3goHM">
                             Ver curso &gt;
                         </a>
                     </div>

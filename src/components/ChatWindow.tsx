@@ -35,7 +35,7 @@ export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowP
   const { FFirstMessageSent } = useAuth();
   const { updateChatId } = useAuth();
   const { chatId } = useAuth();
-  const chat = useRef<number | null>(null);
+  let chat = useRef<number | null>(null);
 
   // Initialize with false (dark mode is default), true means light mode is active
   const [isLightMode, setIsLightMode] = useState(false)
@@ -90,8 +90,9 @@ export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowP
           FFirstMessageSent(true);
         } 
         
-        // INICIALIZAR EN CHAT_ID ACTUAL
-        
+        // 1. INICIALIZAR EN CHAT_ID ACTUAL
+        chat.current = SessionService.getChatId();
+
         // 2. PARAMS PARA PROMPT SERVICE (CHAT ID)
         paramsPrompt = {
             chatId: chat.current !== null ? chat.current : (chatId ?? 0)
