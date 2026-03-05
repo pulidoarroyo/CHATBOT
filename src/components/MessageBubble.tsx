@@ -1,8 +1,8 @@
 import ReactMarkdown from "react-markdown"
 
-interface Message {
+export interface Message {
   id: number
-  role: "user" | "assistant"
+  role: "user" | "assistant" | "model"
   content: string
   type?: "text" | "code"
 }
@@ -26,7 +26,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
     )
   }
 
-  if (message.type === "text" && message.role === "assistant") {
+  if (message.type === "text" && ( message.role === "assistant" || message.role === "model" )) {
     return (
       <div className={`message-wrapper assistant`}>
         <div className={`assistant-message`}>

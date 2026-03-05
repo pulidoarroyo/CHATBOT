@@ -23,9 +23,6 @@ function Chatbot() {
     return <Navigate to="/login" replace />;
   }
 
-
-
-
   const handleCargarChats = async () => {
     // contactar ep
         try {
@@ -74,7 +71,6 @@ function Chatbot() {
           activeChat={activeChat}
           onSelectChat={setActiveChat}
           onToggleSidebar={() => setSidebarOpen(false)}
-          refetchChats={handleCargarChats} 
         />
       )}
       <ChatWindow sidebarOpen={sidebarOpen} onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />

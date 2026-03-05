@@ -14,12 +14,13 @@ import type {  PostchatParams } from "../api/postchat.api";
 import type {  promptParams } from "../api/prompt.api";
 import { truncate } from "../utils/string.utils"
 import { useAuth } from "../hooks/useAuth"
+import { getChatByChatIdService } from "../services/getchatbychatid.service"
 
 interface Message {
   id: number
-  role: "user" | "assistant"
+  role: "user" | "assistant" | "model"
   content: string
-  type?: "text" | "code"
+  type?: "text" | "code" 
 }
 
 interface ChatWindowProps {
@@ -30,15 +31,14 @@ interface ChatWindowProps {
 export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowProps) {
   const { error, showError, clearError } = useErrorToast();
   const [messages, setMessages] = useState<Message[]>([]);
-  const { firstMessageSent} = useAuth();
-  const { FFirstMessageSent} = useAuth();
+  const { firstMessageSent } = useAuth();
+  const { FFirstMessageSent } = useAuth();
   const { updateChatId } = useAuth();
   const { chatId } = useAuth();
-  const chat= useRef<number | null>(null);
+  const chat = useRef<number | null>(null);
 
   // Initialize with false (dark mode is default), true means light mode is active
   const [isLightMode, setIsLightMode] = useState(false)
-
 
   // Initialize theme on component mount
   useEffect(() => {
@@ -83,12 +83,14 @@ export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowP
           const response = await ChatbotService.createChat(paramsPostChat);
   
           // OBTENER CHAT ID Y GUARDARLO EN EL CONTEXTO PARA USARLO 
-          updateChatId(response.data.id_chat); 
-          chat.current = response.data.id_chat;
+          updateChatId(response.id_chat); 
+          chat.current = response.id_chat;
         
           // Marcar que ya se envió el primer mensaje para evitar crear múltiples chats
           FFirstMessageSent(true);
         } 
+        
+        // INICIALIZAR EN CHAT_ID ACTUAL
         
         // 2. PARAMS PARA PROMPT SERVICE (CHAT ID)
         paramsPrompt = {
@@ -141,6 +143,32 @@ export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowP
       localStorage.setItem('theme', 'dark')
     }
   }
+
+  useEffect(() => {
+    // BUSCAR HISTORIAL SEGUN CHAT ID (SI EXISTE) Y MOSTRARLO
+    if (firstMessageSent) {
+    const fetchChatHistory = async () => {
+      if (chatId) {
+        try {
+          const chatHistory = await getChatByChatIdService(chatId);
+          setMessages(chatHistory);
+        } catch (err) {
+          console.error("Error fetching chat history:", err);
+        }
+      }
+    };
+    fetchChatHistory();
+    } 
+
+  }, [chatId]);
+
+
+  useEffect(() => {
+  // NO SE HA ENVIADO 1ER MENSAJE, LA UI SE MANTIENE LIMPIA
+    if (!firstMessageSent) {
+      setMessages([]);
+    }
+  }, [firstMessageSent]);
 
   return (
     <main className="chat-window">
