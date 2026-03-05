@@ -4,7 +4,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # 1. Importar el middleware
 from dotenv import load_dotenv, find_dotenv
-from app.config.dbconf import init_db
+from backend.app.config.dbconf import init_db
 from contextlib import asynccontextmanager
 from .routers import user
 from .routers import chatbot
