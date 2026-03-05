@@ -34,8 +34,6 @@ export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowP
   const { FFirstMessageSent} = useAuth();
   const { updateChatId } = useAuth();
   const { chatId } = useAuth();
-  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-  //const [ chat, setChat] = useState<number>(0);
   const chat= useRef<number | null>(null);
 
   // Initialize with false (dark mode is default), true means light mode is active
@@ -66,57 +64,39 @@ export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowP
       type: "text",
     }
     setMessages([...messages, newMessage]);
-    
-    if(!firstMessageSent){
-      handleResponseMessage(question); 
-    }
-    
+  
     handleResponseMessage(question);
-    
   }
 
   const handleResponseMessage = async (question: string) => {
-      // 1. CREA CHAT SI Y SOLO SI ES LA 1ERA VEZ
-      if( !firstMessageSent ) {
+      let paramsPostChat: PostchatParams; 
+      let paramsPrompt: promptParams;
 
-        const paramsPostChat: PostchatParams = {
-          userId: SessionService.getUserId(),
-          chatNombre: truncate(question, 20), // Definir nombre a chat
+      try {
+        // 1. CREA CHAT SI Y SOLO SI ES LA 1ERA VEZ
+        if( !firstMessageSent ) {
+          paramsPostChat = {
+            userId: SessionService.getUserId(),
+            chatNombre: truncate(question, 20), // Definir nombre a chat
+          };
+          
+          const response = await ChatbotService.createChat(paramsPostChat);
+  
+          // OBTENER CHAT ID Y GUARDARLO EN EL CONTEXTO PARA USARLO 
+          updateChatId(response.data.id_chat); 
+          chat.current = response.data.id_chat;
+        
+          // Marcar que ya se envió el primer mensaje para evitar crear múltiples chats
+          FFirstMessageSent(true);
+        } 
+        
+        // 2. PARAMS PARA PROMPT SERVICE (CHAT ID)
+        paramsPrompt = {
+            chatId: chat.current !== null ? chat.current : (chatId ?? 0)
         };
 
-        try {
-          const response = await ChatbotService.createChat(paramsPostChat);
-
-          // 2. SETEA EL CHAT ID 
-          // HAY QUE OBTENER EL CHAT ID Y EJECUTAR EL UPDATECHATID CON LO OBTENIDO
-          updateChatId(response.id_chat);
-          chat.current = response.id_chat;
-          console.log(chat.current);
-          await sleep(2000);
-          
-          const paramsPrompt: promptParams = {
-              chatId: chat.current // Use the ref value here!
-          };
-
-          //
-          //setChat(response.id_chat);
-          await sleep(2000);
 
         // 3. CONTACTAR A EP FEEDBACK PROMPT SERVICE
-                  
-        //const id_chat = getChatId(); CULPABLE
-        //const id_chat = Number(getChatId());
-        //const id_chat = chatId;
-       
-        //const id_chat = chat;
-        console.log("antes:"+chat.current);
-        await sleep(2000);
-        console.log("despues:"+chat.current);
-          
-        /*const paramsPrompt: promptParams = {
-          chatId: id_chat
-        };*/
-
         const response2 = await promptService(paramsPrompt, {
           message: question
         });
@@ -133,71 +113,19 @@ export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowP
           setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
 
-        } catch (err: unknown) {
+      } catch (err: unknown) {
+          if (axios.isAxiosError(err)) {
+          // Error proveniente de Axios
+          const message =
+            err.response?.data?.message ||
+            "Error en contactar al Chatbot.";
+            showError(message.charAt(0).toUpperCase() + message.slice(1).toLowerCase());
 
-            if (axios.isAxiosError(err)) {
-            // Error proveniente de Axios
-            const message =
-              err.response?.data?.message ||
-              "Error de conexión con el servidor.";
-              showError(message.charAt(0).toUpperCase() + message.slice(1).toLowerCase());
-
-            } else {
-              // Error inesperado (JS / lógica)
-              showError("Ocurrió un error inesperado.");
-            }
-        }
-        
-        FFirstMessageSent(true);
-
-      }else{
-        
-        const id_chat = SessionService.getChatId(); //CULPABLE
-        //const id_chat = Number(getChatId());
-        //const id_chat = chat;
-        console.log("antes:"+id_chat);
-        await sleep(2000);
-        console.log("despues:"+id_chat);
-        
-        // 3. CONTACTAR A EP FEEDBACK PROMPT SERVICE 
-        const paramsPrompt: promptParams = {
-          chatId: id_chat
-        };
-        try{
-          const response2 = await promptService(paramsPrompt, {
-            message: question
-          });
-
-          if (response2.response && response2.response.toLowerCase().includes("error")) {
-            showError(response2.response);
           } else {
-            const newMessage: Message = {
-              id: messages.length + 1,
-              role: "assistant",
-              content: response2.response,
-              type: "text",
-            };
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
+            // Error inesperado (JS / lógica)
+            showError("Ocurrió un error inesperado.");
           }
-
-
-        } catch (err: unknown) {
-
-            if (axios.isAxiosError(err)) {
-            // Error proveniente de Axios
-            const message =
-              err.response?.data?.message ||
-              "Error de conexión con el servidor.";
-              showError(message.charAt(0).toUpperCase() + message.slice(1).toLowerCase());
-
-            } else {
-              // Error inesperado (JS / lógica)
-              showError("Ocurrió un error inesperado.");
-            }
-        }
-
       }
-
   }
 
   // Toggle between dark and light modes - adds/removes 'light' class

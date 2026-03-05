@@ -3,6 +3,7 @@ import { MdHelp } from "react-icons/md"
 import { FiLogOut } from "react-icons/fi"
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { SessionService } from '../services/session.service'
 
 interface UserModalProps {
   onClose: () => void
@@ -29,7 +30,7 @@ export default function UserModal({ onClose }: UserModalProps) {
         <div className="user-modal">
           <div className="modal-profile-section">
             <div className="modal-avatar">👤</div>
-            <span className="modal-username">Name_Usuario</span>
+            <span className="modal-username">{SessionService.getUser().nombre}</span>
           </div>
 
           <div className="modal-divider"></div>
