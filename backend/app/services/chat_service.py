@@ -63,7 +63,6 @@ async def chat_by_id(chat_id:int,request,response):
         rows = result
         
         if not rows:
-            response.status_code = 404
             return {"message": "chat sin mensajes", "info": None}
         
         messages_list = []
