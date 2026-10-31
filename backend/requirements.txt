@@ -1,0 +1,9 @@
+google-genai
+bcrypt==4.0.1
+fastapi
+uvicorn
+python-dotenv
+aiosqlite
+aiofiles
+python-multipart
+passlib
