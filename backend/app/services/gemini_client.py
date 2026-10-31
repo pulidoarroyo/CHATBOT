@@ -1,5 +1,4 @@
 from fastapi import HTTPException
-import google.generativeai as genai
 from google import genai
 from google.genai import types
 from ..config.load_env import settings
@@ -53,7 +52,7 @@ def ask_gemini_feedback(prompt: str, history: list = None):  # type: ignore
     )
     
     chat = client.chats.create(
-        model='gemini-2.5-flash',
+        model='gemini-3.8-flash',
         history=history,
         config = chat_config
         )
