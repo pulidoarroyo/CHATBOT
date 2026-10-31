@@ -145,31 +145,28 @@ export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowP
     }
   }
 
-  useEffect(() => {
-    // BUSCAR HISTORIAL SEGUN CHAT ID (SI EXISTE) Y MOSTRARLO
-    if (firstMessageSent) {
+    useEffect(() => {
+    // Chat nuevo: UI limpia
+    if (!firstMessageSent || !chatId) {
+      setMessages([]);
+      return;
+    }
+
+    let cancelled = false;
+
     const fetchChatHistory = async () => {
-      if (chatId) {
-        try {
-          const chatHistory = await getChatByChatIdService(chatId);
-          setMessages(chatHistory);
-        } catch (err) {
-          console.error("Error fetching chat history:", err);
-        }
+      try {
+        const chatHistory = await getChatByChatIdService(chatId);
+        if (!cancelled) setMessages(chatHistory);
+      } catch (err) {
+        console.error("Error en consultar el historial del chat:", err);
       }
     };
+
     fetchChatHistory();
-    } 
 
-  }, [chatId]);
-
-
-  useEffect(() => {
-  // NO SE HA ENVIADO 1ER MENSAJE, LA UI SE MANTIENE LIMPIA
-    if (!firstMessageSent) {
-      setMessages([]);
-    }
-  }, [firstMessageSent]);
+    return () => { cancelled = true; };
+  }, [chatId, firstMessageSent]);
 
   return (
     <main className="chat-window">

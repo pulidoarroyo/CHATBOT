@@ -64,24 +64,18 @@ export default function Sidebar({ chats, activeChat, onSelectChat, onToggleSideb
       }
       
     } finally {
-      setLoading(false);
-      FFirstMessageSent(false); // Reiniciar para permitir crear otro chat
-      navigate('/chatbot'); 
-      
-    }
+        setLoading(false);
+        updateChatId(0);        
+        FFirstMessageSent(false);
+        navigate('/chatbot');
+      }
   };
 
 
   const handleActiveChat = async (chatId: number) => {
-  
    // 1. CAMBIAR VALOR DE CHATID EN EL CONTEXTO 
    updateChatId(chatId);
    FFirstMessageSent(true); 
-   // 2. OBTENER MENSAJES DEL CHAT SELECCIONADO (SI ES NECESARIO)
-   // Aquí podrías llamar a un servicio para obtener los mensajes de este chat
-
-   // 3. Actualizar el estado de tu componente ChatWindow, por ejemplo.
-   
 
   }
 
