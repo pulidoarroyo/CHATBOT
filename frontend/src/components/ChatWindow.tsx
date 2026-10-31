@@ -1,0 +1,191 @@
+import { useState, useEffect, useRef } from "react"
+import { VscLayoutSidebarLeft } from "react-icons/vsc"
+import { MdDarkMode, MdOutlineAttachFile, MdSend } from "react-icons/md"
+import { BsSunFill } from "react-icons/bs"
+import MessageBubble from "./MessageBubble"
+import InputArea from "./InputArea"
+import { promptService } from "../services/prompt.service"
+import { useErrorToast } from "../hooks/useErrorToast";
+import axios from "axios"
+import ReactMarkdown from 'react-markdown'
+import { ChatbotService } from "../services/postchat.service";
+import { SessionService } from "../services/session.service";
+import type {  PostchatParams } from "../api/postchat.api";
+import type {  promptParams } from "../api/prompt.api";
+import { truncate } from "../utils/string.utils"
+import { useAuth } from "../hooks/useAuth"
+import { getChatByChatIdService } from "../services/getchatbychatid.service"
+
+interface Message {
+  id: number
+  role: "user" | "assistant" | "model"
+  content: string
+  type?: "text" | "code" 
+}
+
+interface ChatWindowProps {
+  sidebarOpen: boolean
+  onToggleSidebar: () => void
+}
+
+export default function ChatWindow({ sidebarOpen, onToggleSidebar }: ChatWindowProps) {
+  const { error, showError, clearError } = useErrorToast();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const { firstMessageSent } = useAuth();
+  const { FFirstMessageSent } = useAuth();
+  const { updateChatId } = useAuth();
+  const { chatId } = useAuth();
+  let chat = useRef<number | null>(null);
+
+  // Initialize with false (dark mode is default), true means light mode is active
+  const [isLightMode, setIsLightMode] = useState(false)
+
+  // Initialize theme on component mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'dark'
+    const isLight = savedTheme === 'light'
+    setIsLightMode(isLight)
+    
+    if (isLight) {
+      document.documentElement.classList.add('light')
+    } else {
+      document.documentElement.classList.remove('light')
+    }
+  }, [])
+
+  const handleSendMessage = async (question: string) => {
+
+    if (!question.trim()) return
+
+    const newMessage: Message = {
+      id: messages.length + 1,
+      role: "user",
+      content: question,
+      type: "text",
+    }
+    setMessages([...messages, newMessage]);
+  
+    handleResponseMessage(question);
+  }
+
+  const handleResponseMessage = async (question: string) => {
+      let paramsPostChat: PostchatParams; 
+      let paramsPrompt: promptParams;
+
+      try {
+        // 1. CREA CHAT SI Y SOLO SI ES LA 1ERA VEZ
+        if( !firstMessageSent ) {
+          paramsPostChat = {
+            userId: SessionService.getUserId(),
+            chatNombre: truncate(question, 20), // Definir nombre a chat
+          };
+          
+          const response = await ChatbotService.createChat(paramsPostChat);
+  
+          // OBTENER CHAT ID Y GUARDARLO EN EL CONTEXTO PARA USARLO 
+          updateChatId(response.id_chat); 
+          chat.current = response.id_chat;
+        
+          // Marcar que ya se envió el primer mensaje para evitar crear múltiples chats
+          FFirstMessageSent(true);
+        } 
+        
+        // 1. INICIALIZAR EN CHAT_ID ACTUAL
+        chat.current = SessionService.getChatId();
+
+        // 2. PARAMS PARA PROMPT SERVICE (CHAT ID)
+        paramsPrompt = {
+            chatId: chat.current !== null ? chat.current : (chatId ?? 0)
+        };
+
+
+        // 3. CONTACTAR A EP FEEDBACK PROMPT SERVICE
+        const response2 = await promptService(paramsPrompt, {
+          message: question
+        });
+
+        if (response2.response && response2.response.toLowerCase().includes("error")) {
+          showError(response2.response);
+        } else {
+          const newMessage: Message = {
+            id: messages.length + 1,
+            role: "assistant",
+            content: response2.response,
+            type: "text",
+          };
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+        }
+
+      } catch (err: unknown) {
+          if (axios.isAxiosError(err)) {
+          // Error proveniente de Axios
+          const message =
+            err.response?.data?.message ||
+            "Error en contactar al Chatbot.";
+            showError(message.charAt(0).toUpperCase() + message.slice(1).toLowerCase());
+
+          } else {
+            // Error inesperado (JS / lógica)
+            showError("Ocurrió un error inesperado.");
+          }
+      }
+  }
+
+  // Toggle between dark and light modes - adds/removes 'light' class
+  const toggleTheme = () => {
+    const newIsLight = !isLightMode
+    setIsLightMode(newIsLight)
+    
+    if (newIsLight) {
+      document.documentElement.classList.add('light')
+      localStorage.setItem('theme', 'light')
+    } else {
+      document.documentElement.classList.remove('light')
+      localStorage.setItem('theme', 'dark')
+    }
+  }
+
+    useEffect(() => {
+    // Chat nuevo: UI limpia
+    if (!firstMessageSent || !chatId) {
+      setMessages([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    const fetchChatHistory = async () => {
+      try {
+        const chatHistory = await getChatByChatIdService(chatId);
+        if (!cancelled) setMessages(chatHistory);
+      } catch (err) {
+        console.error("Error en consultar el historial del chat:", err);
+      }
+    };
+
+    fetchChatHistory();
+
+    return () => { cancelled = true; };
+  }, [chatId, firstMessageSent]);
+
+  return (
+    <main className="chat-window">
+      <div className="chat-header">
+        <button className="sidebar-toggle-btn" onClick={onToggleSidebar} title="Toggle sidebar">
+          <VscLayoutSidebarLeft size={24} />
+        </button>
+        {/* Theme toggle button with corrected icon logic */}
+        <button className="theme-toggle-btn" onClick={toggleTheme} title="Toggle theme">
+          {isLightMode ? <MdDarkMode size={24} /> : <BsSunFill size={24} />}
+        </button>
+      </div>
+      <div className="messages-container">
+        {messages.map((msg) => (
+          <MessageBubble key={msg.id} message={msg} />
+        ))}
+
+      </div>
+      <InputArea onSendMessage={handleSendMessage} />
+    </main>
+  )
+}

@@ -1,0 +1,11 @@
+button.btn-success {
+  background-color: #9FE6C2; 
+  color: #ffffff;             
+  border: none;
+  cursor: default;
+  transition: background-color 0.3s ease;
+}
+
+button.btn-success:hover {
+  background-color: #85d5aa; 
+}
