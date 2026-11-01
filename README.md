@@ -154,37 +154,39 @@ cd CHATBOT
  
 ### 2. Backend
  
-```bash
-cd backend
+Desde la **raíz del repositorio**, crea el entorno virtual e instala las dependencias:
  
+```bash
 # Crear y activar un entorno virtual
-python -m venv venv
+python -m venv backend/venv
  
 # Windows
-venv\Scripts\activate
+backend\venv\Scripts\activate
 # macOS / Linux
-source venv/bin/activate
+source backend/venv/bin/activate
  
 # Instalar dependencias
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
  
 Crea tu archivo de entorno a partir de la plantilla y completa los valores (ver [Variables de entorno](#variables-de-entorno)):
  
 ```bash
 # Windows
-copy .env.example .env
+copy backend\.env.example backend\.env
 # macOS / Linux
-cp .env.example .env
+cp backend/.env.example backend/.env
 ```
  
-Levanta el servidor desde la carpeta `backend/`:
+Levanta el servidor **desde la raíz del repositorio** (no desde dentro de `backend/`):
  
 ```bash
-uvicorn app.main:app --reload --port 3000
+uvicorn backend.app.main:app --reload --port 8000
 ```
  
-La API quedará disponible en `http://localhost:3000` y la documentación interactiva en `http://localhost:3000/docs`.
+> **Importante:** el comando debe ejecutarse siempre desde la carpeta raíz (`CHATBOT/`). Si lo ejecutas desde `backend/`, Python no encontrará el módulo `backend` y mostrará el error `ModuleNotFoundError: No module named 'backend'`.
+ 
+La API quedará disponible en `http://localhost:8000` y la documentación interactiva en `http://localhost:8000/docs`.
  
 ### 3. Frontend
  
@@ -224,7 +226,7 @@ GEMINI_API_KEY=tu_clave_de_api
 ### Frontend (`frontend/.env`)
  
 ```env
-VITE_URL_BASE=http://localhost:3000
+VITE_URL_BASE=http://localhost:8000
 ```
  
 `VITE_URL_BASE` debe apuntar a la URL donde corre el backend.
